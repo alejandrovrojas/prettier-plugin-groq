@@ -1,0 +1,27 @@
+{
+  "name": "prettier-plugin-groq",
+  "version": "0.1.0",
+  "description": "Prettier GROQ plugin",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "prettier --plugin . ./test/input.groq",
+    "testfile": "prettier --plugin . ./test/input.groq > ./test/output.groq"
+  },
+  "author": "Alejandro V. Rojas",
+  "keywords": [
+    "groq",
+    "prettier-plugin",
+    "prettier",
+    "formatter"
+  ],
+  "files": [
+    "/src"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "groq-js": "^0.2.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.0"
+  }
+}

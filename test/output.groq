@@ -1,0 +1,78 @@
+{
+	_id,
+	_type,
+	_rev,
+	_score,
+
+	'query': *[_id in path('a.b.c.**') && title match $variable] [0...10] | order(title asc) {
+		reference->,
+
+		inline_splat[]-> {
+			..., asset->
+		},
+
+		'inline_splat_projection': *[_type == 'article'] {
+			..., body[] {
+				..., _type == 'product' => {
+					...
+				}
+			}
+		},
+
+		$value >= '2020-04-01' && test != true => {
+			'one': *[$count > count(*[_type == 'document'])],
+			'two': *[$id in *[references(^._id)]._id]
+		}
+	} [$current...$offset],
+
+	this_value > $that_value
+	|| (other == true && test < 10)
+	|| (other == true && test < 10)
+	&& (other == true || test < 10)
+	&& (other == true || test < 10) => {
+		'a': 'a',
+		'b': 2 + 2,
+		'c': [1, 2, 3],
+
+		'd': {
+			'uno': 'dos',
+			'tres': 'cuatro'
+		}
+	},
+
+	'query_params': *[$id == 'query' && test == count($thing) && active == true] | order(
+		with asc,
+		many desc,
+		more desc,
+		parameters asc
+	) [0...10],
+
+	'query_projection': *[
+		_id == '23h4123-f23452134h-f234234f2'
+		&& $longer == 'query'
+		&& _type == 'document'
+		&& !(_id in path('drafts.**'))
+		&& active == true
+	] {
+		products[]-> {
+			_id,
+			_type,
+			_score,
+			_rev,
+			_createdAt,
+			_updatedAt,
+
+			bundles-> {
+				title,
+				name,
+				slug
+			}
+		},
+
+		'nested_function_args': select(
+			popularity > 20 => 'high',
+			popularity > 10 => 'medium',
+			popularity <= 10 => 'low'
+		)
+	}
+}
