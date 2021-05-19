@@ -6,8 +6,8 @@ function printGROQ(path, options, print) {
 	const ßß = key => path.map(print, key);
 	const parent = type => (!path.getParentNode() ? false : path.getParentNode().type === type);
 
-	const inline_splat = true;
 	const array_pipe = false;
+	const inline_simple = true;
 
 	function return_value(node) {
 		return typeof node.value === 'string'
@@ -118,29 +118,39 @@ function printGROQ(path, options, print) {
 			const attributes = ßß('attributes');
 
 			attributes.forEach((attribute, i, a) => {
-				const last = attribute.contents[attribute.contents.length - 1];
-
-				if (i > 0 && ['Projection', 'FuncCall', 'Slice', 'PipeFuncCall', 'Object'].includes(last.label)) {
-					attribute.contents.splice(0, 0, line);
-				}
-
 				if (a.length > 1 && i < a.length - 1) {
-					attribute.contents.push(', ', line);
+					const last = attribute.contents[attribute.contents.length - 1];
+
+					attribute.contents.push(',');
+
+					if (['Projection', 'FuncCall', 'Deref', 'Slice', 'PipeFuncCall', 'Object'].includes(last.label)) {
+						attribute.contents.push(hardline, hardline);
+					} else if (attribute.label === 'EqualSimpleObjectAttributes') {
+						const next = a[i + 1];
+
+						if (next && next.label === 'EqualSimpleObjectAttributes') {
+							attribute.contents.push(inline_simple ? ' ' : line);
+						} else {
+							attribute.contents.push(hardline, hardline);
+						}
+					} else if (i === 0 && attribute.label === 'ObjectSplat') {
+						if (attributes.length === 2) {
+							attribute.contents.push(' ');
+						} else {
+							attribute.contents.push(hardline, hardline);
+						}
+					} else {
+						attribute.contents.push(line);
+					}
 				}
 			});
 
-			if (inline_splat) {
-				if (attributes.length === 2 && attributes[0].label === 'ObjectSplat') {
-					attributes[0].contents.pop();
-					if (attributes[1].contents[0].type === 'line') {
-						attributes[1].contents.splice(0, 1);
-					}
-				}
-			}
+			const should_break =
+				inline_simple && attributes.every(a => a.label === 'EqualSimpleObjectAttributes') ? '' : breakParent;
 
 			return parent('Projection')
-				? label(node.type, group([attributes, breakParent]))
-				: label(node.type, group(['{', indent([line, attributes, breakParent]), line, '}']));
+				? label(node.type, group([attributes, should_break]))
+				: label(node.type, group(['{', indent([line, attributes, should_break]), line, '}']));
 
 		case 'ObjectAttribute':
 			const value_name = node => (node.base ? value_name(node.base) : node.name);
