@@ -1,14 +1,18 @@
 {
-	_id,
-	_type,
-	_rev,
-	_score,
+	_id, _type, _rev, _score,
 
 	'query': *[_id in path('a.b.c.**') && title match $variable] [0...10] | order(title asc) {
 		reference->,
 
 		inline_splat[]-> {
-			..., asset->
+			...,
+
+			item[_id match $id]->,
+
+			asset-> { _id, _type, slug },
+
+			'a': 'a',
+			'b': 2 + 2
 		},
 
 		'inline_splat_projection': *[_type == 'article'] {
@@ -33,7 +37,6 @@
 		'a': 'a',
 		'b': 2 + 2,
 		'c': [1, 2, 3],
-
 		'd': {
 			'uno': 'dos',
 			'tres': 'cuatro'
@@ -55,18 +58,9 @@
 		&& active == true
 	] {
 		products[]-> {
-			_id,
-			_type,
-			_score,
-			_rev,
-			_createdAt,
-			_updatedAt,
+			_id, _type, _score, _rev, _createdAt, _updatedAt,
 
-			bundles-> {
-				title,
-				name,
-				slug
-			}
+			bundles-> { title, name, slug }
 		},
 
 		'nested_function_args': select(
