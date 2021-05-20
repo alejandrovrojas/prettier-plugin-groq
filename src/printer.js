@@ -6,7 +6,7 @@ function printGROQ(path, options, print) {
 	const ßß = key => path.map(print, key);
 	const parent = type => (!path.getParentNode() ? false : path.getParentNode().type === type);
 
-	const array_pipe = false;
+	const include_pipe = false;
 	const inline_simple = true;
 
 	function return_value(node) {
@@ -37,7 +37,7 @@ function printGROQ(path, options, print) {
 			return label(node.type, ['$', node.name]);
 
 		case 'Element':
-			return label(node.type, [ß('base'), array_pipe ? ' | ' : ' ', '[', ß('index'), ']']);
+			return label(node.type, [ß('base'), include_pipe ? ' | ' : ' ', '[', ß('index'), ']']);
 
 		case 'Mapper':
 			return label(node.type, [ß('base'), '[]']);
@@ -75,7 +75,7 @@ function printGROQ(path, options, print) {
 		case 'Slice':
 			return label(node.type, [
 				ß('base'),
-				array_pipe ? ' | ' : ' ',
+				include_pipe ? ' | ' : ' ',
 				'[',
 				ß('left'),
 				node.isExclusive ? '...' : '..',
@@ -84,10 +84,16 @@ function printGROQ(path, options, print) {
 			]);
 
 		case 'Filter':
-			return label(node.type, group([ß('base'), '[', indent([softline, ß('query')]), softline, ']']));
+			return label(
+				node.type,
+				group([ß('base'), include_pipe ? ' | ' : '', '[', indent([softline, ß('query')]), softline, ']'])
+			);
 
 		case 'Projection':
-			return label(node.type, group([ß('base'), ' {', indent([line, ß('query')]), line, '}']));
+			return label(
+				node.type,
+				group([ß('base'), include_pipe ? ' | ' : ' ', '{', indent([line, ß('query')]), line, '}'])
+			);
 
 		case 'And':
 		case 'Or':
