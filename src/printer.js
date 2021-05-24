@@ -6,7 +6,19 @@ function printGROQ(path, options, print) {
 	const ßß = key => path.map(print, key);
 	const parent = type => (!path.getParentNode() ? false : path.getParentNode().type === type);
 
-	const inline_simple = true;
+	const inline_equal = true;
+
+	function group_value_type(type) {
+		if (['OpCall', 'FuncCall', 'Parameter', 'Array'].includes(type)) {
+			return 'Value';
+		}
+
+		if (['Slice', 'PipeFuncCall'].includes(type)) {
+			return 'Filter';
+		}
+
+		return type;
+	}
 
 	function return_value(node) {
 		return typeof node.value === 'string'
@@ -60,10 +72,10 @@ function printGROQ(path, options, print) {
 			return label(node.type, ['!', ß('base')]);
 
 		case 'ObjectSplat':
-			return label(node.type, ['...', ß('value')]);
+			return label(node.type + node.value.type, ['...', ß('value')]);
 
 		case 'ObjectConditionalSplat':
-			return label(node.type, [ß('condition'), ' => ', ß('value')]);
+			return label(node.type + group_value_type(node.value.type), [ß('condition'), ' => ', ß('value')]);
 
 		case 'OpCall':
 			return label(node.type, [ß('left'), ` ${node.op} `, ß('right')]);
@@ -110,50 +122,42 @@ function printGROQ(path, options, print) {
 
 			attributes.forEach((attribute, i, a) => {
 				if (a.length > 1 && i < a.length - 1) {
-					const last = attribute.contents[attribute.contents.length - 1];
+					const next = a[i + 1];
 
 					attribute.contents.push(',');
 
-					if (['Projection', 'FuncCall', 'Deref', 'Slice', 'PipeFuncCall', 'Object'].includes(last.label)) {
-						attribute.contents.push(hardline, hardline);
-					} else if (attribute.label === 'EqualSimpleObjectAttributes') {
-						const next = a[i + 1];
-
-						if (next && next.label === 'EqualSimpleObjectAttributes') {
-							attribute.contents.push(inline_simple ? ' ' : line);
+					if (next && next.label === attribute.label) {
+						if (inline_equal && attribute.label.endsWith('Identifier')) {
+							attribute.contents.push(' ');
 						} else {
-							attribute.contents.push(hardline, hardline);
+							attribute.contents.push(line);
+
+							if (attribute.label.endsWith('Projection') || attribute.label.endsWith('Object')) {
+								attribute.contents.push(hardline);
+							}
 						}
-					} else if (i === 0 && attribute.label === 'ObjectSplat') {
-						if (attributes.length === 2) {
+					} else {
+						if (attribute.label === 'ObjectSplatThis' && i === 0 && attributes.length === 2) {
 							attribute.contents.push(' ');
 						} else {
 							attribute.contents.push(hardline, hardline);
 						}
-					} else {
-						attribute.contents.push(line);
 					}
 				}
 			});
 
-			const should_break =
-				inline_simple && attributes.every(a => a.label === 'EqualSimpleObjectAttributes') ? '' : breakParent;
-
 			return parent('Projection')
-				? label(node.type, group([attributes, should_break]))
-				: label(node.type, group(['{', indent([line, attributes, should_break]), line, '}']));
+				? label(node.type, group([attributes, breakParent]))
+				: label(node.type, group(['{', indent([line, attributes, breakParent]), line, '}']));
 
 		case 'ObjectAttribute':
 			const value_name = node => (node.base ? value_name(node.base) : node.name);
-			const equal_identifiers = node.key.value === value_name(node.value);
+			const equal_pair = node.key.value === value_name(node.value);
 
-			if (equal_identifiers) {
-				return label(node.key.value === node.value.name ? 'EqualSimpleObjectAttributes' : 'EqualObjectAttributes', [
-					ß('value'),
-				]);
-			}
-
-			return label(node.type, [ß('key'), ': ', ß('value')]);
+			return label(
+				node.type + group_value_type(node.value.type),
+				equal_pair ? [ß('value')] : [ß('key'), ': ', ß('value')]
+			);
 
 		default:
 			return '';
