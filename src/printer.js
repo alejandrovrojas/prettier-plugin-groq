@@ -87,7 +87,7 @@ function printGROQ(path, options, print) {
 			return label(node.type, [ß('base'), ' [', ß('left'), node.isExclusive ? '...' : '..', ß('right'), ']']);
 
 		case 'Filter':
-			return label(node.type, group([ß('base'), ' [', indent([softline, ß('query')]), softline, ']']));
+			return label(node.type, group([ß('base'), '[', indent([softline, ß('query')]), softline, ']']));
 
 		case 'Projection':
 			return label(node.type, group([ß('base'), ' {', indent([line, ß('query')]), line, '}']));
