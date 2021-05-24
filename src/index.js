@@ -22,8 +22,18 @@ const printers = {
 	},
 };
 
+const options = {
+	groqInlinePropertyShorthand: {
+		type: 'boolean',
+		category: 'Global',
+		default: true,
+		description: 'Inlines object properties that use the shorthand expression without projections',
+	},
+};
+
 module.exports = {
 	languages,
 	parsers,
 	printers,
+	options,
 };

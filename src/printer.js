@@ -6,7 +6,7 @@ function printGROQ(path, options, print) {
 	const ßß = key => path.map(print, key);
 	const parent = type => (!path.getParentNode() ? false : path.getParentNode().type === type);
 
-	const inline_equal = true;
+	const inline_property_shorthand = options.groqInlinePropertyShorthand;
 
 	function group_value_type(type) {
 		if (['OpCall', 'FuncCall', 'Parameter', 'Array'].includes(type)) {
@@ -127,7 +127,7 @@ function printGROQ(path, options, print) {
 					attribute.contents.push(',');
 
 					if (next && next.label === attribute.label) {
-						if (inline_equal && attribute.label.endsWith('Identifier')) {
+						if (inline_property_shorthand && attribute.label.endsWith('Identifier')) {
 							attribute.contents.push(' ');
 						} else {
 							attribute.contents.push(line);
