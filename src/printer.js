@@ -106,10 +106,20 @@ function printGROQ(path, options, print) {
 			);
 
 		case 'PipeFuncCall':
-			return label(
-				node.type,
-				group([ß('base'), ' | ', node.name, '(', indent([softline, join([',', line], ßß('args'))]), softline, ')'])
-			);
+			return node.name === 'order'
+				? label(node.type, group([ß('base'), ' | ', node.name, '(', indent([join([', '], ßß('args'))]), ')']))
+				: label(
+						node.type,
+						group([
+							ß('base'),
+							' | ',
+							node.name,
+							'(',
+							indent([softline, join([',', line], ßß('args'))]),
+							softline,
+							')',
+						])
+				  );
 
 		case 'Array':
 			return label(node.type, group(['[', indent([softline, join([',', line], ßß('elements'))]), softline, ']']));
