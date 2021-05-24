@@ -98,28 +98,16 @@ function printGROQ(path, options, print) {
 			const query = [ß('left'), parent('Parenthesis') ? ' ' : line, operators[node.type], ß('right')];
 			return parent('ObjectConditionalSplat') ? label(node.type, group(query)) : label(node.type, query);
 
+		/* prettier-ignore */
 		case 'FuncCall':
 			const select_exception = node.name === 'select' ? hardline : line;
-			return label(
-				node.type,
-				group([node.name, '(', indent([softline, join([',', select_exception], ßß('args'))]), softline, ')'])
-			);
+			return label(node.type, group([node.name, '(', indent([softline, join([',', select_exception], ßß('args'))]), softline, ')']));
 
+		/* prettier-ignore */
 		case 'PipeFuncCall':
 			return node.name === 'order'
 				? label(node.type, group([ß('base'), ' | ', node.name, '(', indent([join([', '], ßß('args'))]), ')']))
-				: label(
-						node.type,
-						group([
-							ß('base'),
-							' | ',
-							node.name,
-							'(',
-							indent([softline, join([',', line], ßß('args'))]),
-							softline,
-							')',
-						])
-				  );
+				: label(node.type, group([ß('base'), ' | ', node.name, '(', indent([softline, join([',', line], ßß('args'))]), softline, ')']));
 
 		case 'Array':
 			return label(node.type, group(['[', indent([softline, join([',', line], ßß('elements'))]), softline, ']']));
