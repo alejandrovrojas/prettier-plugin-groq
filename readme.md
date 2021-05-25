@@ -1,6 +1,6 @@
 # Prettier GROQ
 
-This formatter follows the Prettier philosophy of being opinionated and providing few options. The input code is formatted directly from the AST, thereby not preserving whitespace and ignoring comments (see _currently unsupported_ below).
+This formatter follows the Prettier philosophy of being opinionated and provide few options. The input code is formatted directly from the AST, thereby not preserving whitespace and ignoring comments (see _currently unsupported_ below).
 
 ### Overview
 
@@ -23,7 +23,7 @@ Much of the formatting work revolves around grouping object properties in differ
    'def': *[defined(test)] | order(test asc),
    'ghi': *[defined(test)] | order(test asc) | [0...10],
 
-   $value >= '2049-01-01' => {
+   $value >= other_value => {
       'foo': 123
    },
 
@@ -128,7 +128,7 @@ npm install --save-dev prettier-plugin-groq
 
 ### Integration
 
-When installed locally, the plugin should automatically be picked up by your editor if it supports Prettier ([VS Code](https://github.com/prettier/prettier-vscode), [Sublime Text 3](https://packagecontrol.io/packages/JsPrettier)). When installed globally, the plugin is picked up by the prettier CLI as well:
+When installed locally, the plugin should automatically be picked up by your editor if it supports Prettier ([VS Code](https://github.com/prettier/prettier-vscode), [Sublime Text 3](https://packagecontrol.io/packages/JsPrettier)). When installed globally, the plugin is picked up by the prettier CLI:
 
 ```
 prettier -w file.groq
