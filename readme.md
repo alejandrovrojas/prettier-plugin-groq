@@ -1,4 +1,4 @@
-# Prettier GROQ plugin
+# Prettier GROQ
 
 This formatter follows the Prettier philosophy of being opinionated and providing few options. The input code is formatted directly from the AST, thereby not preserving whitespace and ignoring comments (see _currently unsupported_ below).
 
@@ -6,7 +6,7 @@ This formatter follows the Prettier philosophy of being opinionated and providin
 
 #### Groups
 
-Much of the formatting work revolves grouping object properties in different ways:
+Much of the formatting work revolves around grouping object properties in different ways:
 
 1. All properties are placed on separate lines except for properties using the shorthand syntax (_see options below_).
 2. All properties of the same value type are grouped and separated from the next group by an empty line.
@@ -78,7 +78,7 @@ The expansion operator is printed inline if the projection has exactly 2 propert
 
 #### Select
 
-The `select` function arguments are always printed in new lines:
+The `select` function arguments are always printed on separate lines:
 
 ```
 *[] {
@@ -98,7 +98,7 @@ The `order` component is rarely used with many arguments and is therefore always
 *[] | order(few asc, items desc)
 ```
 
-This is also done to prevent wrapping the order arguments _before_ wrapping the filter component in long queries:
+This is also done to prevent wrapping the `order` scope before wrapping the filter component in long queries:
 
 _Bad:_
 
@@ -136,7 +136,7 @@ prettier -w file.groq
 
 ### Options
 
--  `groqInlinePropertyShorthand` _(default: `true`)_
+-  `groqInlineShorthandProperties` _(default: `true`)_
 
    Controls whether object properties using the shorthand syntax will be grouped inline:
 
