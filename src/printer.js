@@ -19,11 +19,8 @@ function printGROQ(path, options, print) {
 	}
 
 	function return_value(node) {
-		return typeof node.value === 'string'
-			? options.singleQuote
-				? `'${node.value}'`
-				: `"${node.value}"`
-			: node.value.toString();
+		const in_quotes = options.singleQuote ? `'${node.value}'` : `"${node.value}"`;
+		return node.value === null ? 'null' : typeof node.value === 'string' ? in_quotes : node.value.toString();
 	}
 
 	switch (node.type) {
