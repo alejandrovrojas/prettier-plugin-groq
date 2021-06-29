@@ -18,6 +18,10 @@ function print_groq(path, options, print) {
 		return type;
 	}
 
+	function return_object_attribute_value_name(node) {
+		return node.base ? return_object_attribute_value_name(node.base) : node.name;
+	}
+
 	function return_value(node) {
 		const in_quotes = options.singleQuote ? `'${node.value}'` : `"${node.value}"`;
 		return node.value === null ? 'null' : typeof node.value === 'string' ? in_quotes : node.value.toString();
@@ -144,12 +148,13 @@ function print_groq(path, options, print) {
 				: label(node.type, group(['{', indent([line, attributes, breakParent]), line, '}']));
 
 		case 'ObjectAttribute':
-			const value_name = node => (node.base ? value_name(node.base) : node.name);
-			const equal_pair = node.key.value === value_name(node.value);
+			const attribute_value = node.value.type === 'Attribute';
+			const equal_pair = node.key.value === return_object_attribute_value_name(node.value);
+			const should_merge = equal_pair && !attribute_value;
 
 			return label(
 				node.type + group_value_type(node.value.type),
-				equal_pair ? [ß('value')] : [ß('key'), ': ', ß('value')]
+				should_merge ? [ß('value')] : [ß('key'), ': ', ß('value')]
 			);
 
 		default:
