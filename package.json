@@ -1,6 +1,6 @@
 {
 	"name": "prettier-plugin-groq",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"description": "Prettier GROQ plugin",
 	"main": "src/index.js",
 	"scripts": {
