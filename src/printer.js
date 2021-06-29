@@ -53,7 +53,8 @@ function print_groq(path, options, print) {
 			return label(node.type, [ß('base'), '[]']);
 
 		case 'Attribute':
-			return label(node.type, [ß('base'), '.', node.name]);
+			const from_deref = node.base.type === 'Deref';
+			return label(node.type, [ß('base'), from_deref ? '' : '.', node.name]);
 
 		case 'Deref':
 			return label(node.type, [ß('base'), '->']);
