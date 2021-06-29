@@ -46,6 +46,8 @@
   'attribute_projection': attribute_projection[]{ 'units': coalesce(units, 0) }.units,
   'attribute_access': attribute_access[].units,
   'attribute_access_b': attribute_access_b[].other,
-  'attribute_access_c': attribute_access_gamma[].reference->,
-  'projection': projection { _id }
+  'array_reference_attribute': array_reference_attribute[].reference->name,
+  'reference_attribute': reference_attribute->name,
+  'projection': projection { _id },
+  'array_projection': array_projection[] { _id }
 }
