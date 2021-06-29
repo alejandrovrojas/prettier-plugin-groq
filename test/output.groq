@@ -9,7 +9,9 @@
 
 			item[_id match $id]->,
 
-			asset-> { _id, _type, slug },
+			asset-> {
+				_id, _type, slug
+			},
 
 			'a': 'a',
 			'b': 2 + 2
@@ -37,18 +39,18 @@
 		'a': 'a',
 		'b': 2 + 2,
 		'c': [1, 2, 3],
+
 		'd': {
 			'uno': 'dos',
 			'tres': 'cuatro'
 		}
 	},
 
-	'query_params': *[$id == 'query' && test == count($thing) && active == true] | order(
-		with asc,
-		many desc,
-		more desc,
-		parameters asc
-	) [0...10],
+	'query_params': *[
+		$id == 'query'
+		&& test == count($thing)
+		&& active == true
+	] | order(with asc, many desc, more desc, parameters asc) [0...10],
 
 	'query_projection': *[
 		_id == '23h4123-f23452134h-f234234f2'
@@ -60,7 +62,9 @@
 		products[]-> {
 			_id, _type, _score, _rev, _createdAt, _updatedAt,
 
-			bundles-> { title, name, slug }
+			bundles-> {
+				title, name, slug
+			}
 		},
 
 		'nested_function_args': select(
@@ -68,5 +72,18 @@
 			popularity > 10 => 'medium',
 			popularity <= 10 => 'low'
 		)
+	},
+
+	'attribute_projection': attribute_projection[] {
+		'units': coalesce(units, 0)
+	}.units,
+
+	'attribute_access': attribute_access[].units,
+	'attribute_access_b': attribute_access_b[].other,
+
+	'attribute_access_c': attribute_access_gamma[].reference->,
+
+	projection {
+		_id
 	}
 }
