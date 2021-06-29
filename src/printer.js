@@ -150,9 +150,11 @@ function print_groq(path, options, print) {
 
 		case 'ObjectAttribute':
 			const attribute_value = node.value.type === 'Attribute';
-			const attribute_value_from_projection = attribute_value && node.value.base && node.value.base.type === 'Projection';
+			const base_projection = node.value.base && node.value.base.type === 'Projection';
+
 			const equal_pair = node.key.value === return_object_attribute_value_name(node.value);
 			const should_merge = equal_pair && !attribute_value;
+			const attribute_value_from_projection = attribute_value && base_projection;
 
 			return label(
 				node.type + group_value_type(node.value.type) + (attribute_value_from_projection ? 'Projection' : ''),
