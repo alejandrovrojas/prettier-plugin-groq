@@ -80,10 +80,14 @@
 
 	'attribute_access': attribute_access[].units,
 	'attribute_access_b': attribute_access_b[].other,
-
-	'attribute_access_c': attribute_access_gamma[].reference->,
+	'array_reference_attribute': array_reference_attribute[].reference->name,
+	'reference_attribute': reference_attribute->name,
 
 	projection {
+		_id
+	},
+
+	array_projection[] {
 		_id
 	}
 }
