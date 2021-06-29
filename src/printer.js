@@ -1,6 +1,6 @@
 const { label, group, join, indent, line, softline, hardline, ifBreak, breakParent } = require('prettier').doc.builders;
 
-function printGROQ(path, options, print) {
+function print_groq(path, options, print) {
 	const node = path.getValue();
 	const ß = key => path.call(print, key);
 	const ßß = key => path.map(print, key);
@@ -157,4 +157,4 @@ function printGROQ(path, options, print) {
 	}
 }
 
-exports.print = printGROQ;
+exports.print = print_groq;
