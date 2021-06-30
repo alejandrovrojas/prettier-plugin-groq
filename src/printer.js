@@ -159,7 +159,7 @@ function print_groq(path, options, print) {
 
 			const value_type_override = (() => {
 				if (is_attribute_value && is_base_projection) {
-					return 'Projection';
+					return 'AttributeAccessProjection';
 				}
 
 				return node.value.type;
