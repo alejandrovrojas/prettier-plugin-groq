@@ -149,16 +149,22 @@ function print_groq(path, options, print) {
 				: label(node.type, group(['{', indent([line, attributes, breakParent]), line, '}']));
 
 		case 'ObjectAttribute':
-			const attribute_value = node.value.type === 'Attribute';
-			const base_projection = node.value.base && node.value.base.type === 'Projection';
+			const is_attribute_value = node.value.type === 'Attribute';
+			const is_base_projection = node.value.base && node.value.base.type === 'Projection';
+			const is_equal_pair = node.key.value === return_object_attribute_value_name(node.value);
+			const should_merge_pair = is_equal_pair && !is_attribute_value;
 
-			const equal_pair = node.key.value === return_object_attribute_value_name(node.value);
-			const should_merge = equal_pair && !attribute_value;
-			const attribute_value_from_projection = attribute_value && base_projection;
+			const value_type_override = (() => {
+				if (is_attribute_value && is_base_projection) {
+					return 'Projection';
+				}
+
+				return node.value.type;
+			})();
 
 			return label(
-				node.type + group_value_type(node.value.type) + (attribute_value_from_projection ? 'Projection' : ''),
-				should_merge ? [ß('value')] : [ß('key'), ': ', ß('value')]
+				node.type + group_value_type(value_type_override),
+				should_merge_pair ? [ß('value')] : [ß('key'), ': ', ß('value')]
 			);
 
 		default:
