@@ -21,8 +21,8 @@ function print_groq(path, options, print) {
 		return type;
 	}
 
-	function return_object_attribute_value_name(node) {
-		return node.base ? return_object_attribute_value_name(node.base) : node.name;
+	function return_last_node_name(node) {
+		return node.base ? return_last_node_name(node.base) : node.name;
 	}
 
 	function return_value(node) {
@@ -154,7 +154,7 @@ function print_groq(path, options, print) {
 		case 'ObjectAttribute':
 			const is_attribute_value = node.value.type === 'Attribute';
 			const is_base_projection = node.value.base && node.value.base.type === 'Projection';
-			const is_equal_pair = node.key.value === return_object_attribute_value_name(node.value);
+			const is_equal_pair = node.key.value === return_last_node_name(node.value);
 			const should_merge_pair = is_equal_pair && !is_attribute_value;
 
 			const value_type_override = (() => {
