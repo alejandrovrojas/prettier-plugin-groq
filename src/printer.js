@@ -4,7 +4,10 @@ function print_groq(path, options, print) {
 	const node = path.getValue();
 	const ß = key => path.call(print, key);
 	const ßß = key => path.map(print, key);
-	const parent = type => (!path.getParentNode() ? false : path.getParentNode().type === type);
+
+	function is_parent_type(type) {
+		return !path.getParentNode() ? false : path.getParentNode().type === type;
+	}
 
 	function group_value_type(type) {
 		if (['OpCall', 'FuncCall', 'Parameter', 'Array'].includes(type)) {
@@ -35,7 +38,7 @@ function print_groq(path, options, print) {
 			return '^';
 
 		case 'This':
-			return label(node.type, parent('ObjectSplat') ? '' : '@');
+			return label(node.type, is_parent_type('ObjectSplat') ? '' : '@');
 
 		case 'Value':
 			return label(node.type, return_value(node));
@@ -53,8 +56,8 @@ function print_groq(path, options, print) {
 			return label(node.type, [ß('base'), '[]']);
 
 		case 'Attribute':
-			const from_deref = node.base.type === 'Deref';
-			return label(node.type, [ß('base'), from_deref ? '' : '.', node.name]);
+			const is_base_deref = node.base.type === 'Deref';
+			return label(node.type, [ß('base'), is_base_deref ? '' : '.', node.name]);
 
 		case 'Deref':
 			return label(node.type, [ß('base'), '->']);
@@ -95,8 +98,8 @@ function print_groq(path, options, print) {
 		case 'And':
 		case 'Or':
 			const operators = { And: '&& ', Or: '|| ' };
-			const query = [ß('left'), parent('Parenthesis') ? ' ' : line, operators[node.type], ß('right')];
-			return parent('ObjectConditionalSplat') ? label(node.type, group(query)) : label(node.type, query);
+			const query = [ß('left'), is_parent_type('Parenthesis') ? ' ' : line, operators[node.type], ß('right')];
+			return is_parent_type('ObjectConditionalSplat') ? label(node.type, group(query)) : label(node.type, query);
 
 		/* prettier-ignore */
 		case 'FuncCall':
@@ -144,7 +147,7 @@ function print_groq(path, options, print) {
 				}
 			});
 
-			return parent('Projection')
+			return is_parent_type('Projection')
 				? label(node.type, group([attributes, breakParent]))
 				: label(node.type, group(['{', indent([line, attributes, breakParent]), line, '}']));
 
